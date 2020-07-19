@@ -14,12 +14,10 @@ import com.ciber.volley.Utils.ProductAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
     //ITEMS
     private var listaProductoItems: ArrayList<Item> = ArrayList()
-    //CLIENTES
 
     val adaptador = ProductAdapter(this)
     //  private var request : RequestQueue? =null
@@ -279,7 +277,7 @@ class MainActivity : AppCompatActivity() {
         var boleta:Boleta=Boleta()
         val jsonRequest = JsonObjectRequest(
             Request.Method.GET,
-            Constantes.URL_GET_CLIENTE_BY_ID + id,
+            Constantes.URL_GET_BOLETA_BY_ID + id,
             null,
             { response ->
                 try {
@@ -330,6 +328,36 @@ class MainActivity : AppCompatActivity() {
         )
         MySingleton.getInstance(this).addToRequestQueue(jsonRequest)
     }
+    private fun addItemBoleta(item:DetalleBoleta){
+        val requestBody = JSONObject()
+        requestBody.put("id_detalle", item.id_detalle)
+        requestBody.put("id_boleta", item.id_boleta)
+        requestBody.put("id_producto", item.id_producto)
+        requestBody.put("cantidad", item.cantidad)
+
+        val jsonRequest = JsonObjectRequest(
+            Request.Method.POST,
+            Constantes.URL_POST_BOLETA_ADD_ITEM,
+            requestBody,
+            Response.Listener
+            { response ->
+                try {
+                    val idItem = response.getString("id_producto")
+                    Log.i("INFO ", "Se agrego el producto cod_" + idItem)
+
+                } catch (joex: JSONException) {
+                    println("---------ERROR--EN--EL--JSON-------- $joex")
+                }
+            },
+            Response.ErrorListener { error ->
+                print(error)
+            }
+        )
+        MySingleton.getInstance(this).addToRequestQueue(jsonRequest)
+    }
+    //
+    //URL_PUT_BOLETA_UPDATE_ITEM
+    //URL_DELETE_BOLETA_ITEM
 
     //----------------    FARMACIA  -------------------
     private fun getFarmaciaById(id:Int):Farmacia{
