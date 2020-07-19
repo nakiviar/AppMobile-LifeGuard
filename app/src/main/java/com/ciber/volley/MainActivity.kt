@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         requestBody.put("unidadMed", producto.unidadMed)
 
         val jsonRequest = JsonObjectRequest(
-            Request.Method.POST,
+            Request.Method.PUT,
             Constantes.URL_PUT_PRODUCTO_UPDATE,
             requestBody,
             Response.Listener     {response ->
@@ -333,6 +333,7 @@ class MainActivity : AppCompatActivity() {
         requestBody.put("id_detalle", item.id_detalle)
         requestBody.put("id_boleta", item.id_boleta)
         requestBody.put("id_producto", item.id_producto)
+        requestBody.put("precio", item.precio)
         requestBody.put("cantidad", item.cantidad)
 
         val jsonRequest = JsonObjectRequest(
@@ -342,7 +343,7 @@ class MainActivity : AppCompatActivity() {
             Response.Listener
             { response ->
                 try {
-                    val idItem = response.getString("id_producto")
+                    val idItem = response.getInt("id_producto")
                     Log.i("INFO ", "Se agrego el producto cod_" + idItem)
 
                 } catch (joex: JSONException) {
@@ -355,9 +356,68 @@ class MainActivity : AppCompatActivity() {
         )
         MySingleton.getInstance(this).addToRequestQueue(jsonRequest)
     }
-    //
-    //URL_PUT_BOLETA_UPDATE_ITEM
-    //URL_DELETE_BOLETA_ITEM
+    private fun updateItemRest(item:DetalleBoleta){
+
+        val requestBody = JSONObject()
+
+        requestBody.put("id_detalle", item.id_detalle)
+        requestBody.put("id_boleta", item.id_boleta)
+        requestBody.put("id_producto", item.id_producto)
+        requestBody.put("precio", item.precio)
+        requestBody.put("cantidad", item.cantidad)
+
+        val jsonRequest = JsonObjectRequest(
+            Request.Method.PUT,
+            Constantes.URL_PUT_BOLETA_UPDATE_ITEM,
+            requestBody,
+            Response.Listener     {response ->
+                try {
+                    for (i in 0 until response.length()) {
+                        val desc = response.getInt("id_producto")
+                        Log.i("INFO ","SE ACTUALIZO EL PRODUCTO : "+desc)
+                    }
+
+                }catch (joex : JSONException){
+                    println("---------ERROR--EN--EL--JSON-------- $joex")
+                }
+            } ,
+            Response.ErrorListener {
+                    error -> print(error)
+            }
+        )
+        MySingleton.getInstance(this).addToRequestQueue(jsonRequest)
+    }
+    private fun deleteItemRest(item:DetalleBoleta){
+
+        val requestBody = JSONObject()
+
+        requestBody.put("id_detalle", item.id_detalle)
+        requestBody.put("id_boleta", item.id_boleta)
+        requestBody.put("id_producto", item.id_producto)
+        requestBody.put("precio", item.precio)
+        requestBody.put("cantidad", item.cantidad)
+
+        val jsonRequest = JsonObjectRequest(
+            Request.Method.DELETE,
+            Constantes.URL_DELETE_BOLETA_ITEM,
+            requestBody,
+            Response.Listener     {response ->
+                try {
+                    for (i in 0 until response.length()) {
+                        val desc = response.getInt("id_producto")
+                        Log.i("INFO ","SE ACTUALIZO EL PRODUCTO : "+desc)
+                    }
+
+                }catch (joex : JSONException){
+                    println("---------ERROR--EN--EL--JSON-------- $joex")
+                }
+            } ,
+            Response.ErrorListener {
+                    error -> print(error)
+            }
+        )
+        MySingleton.getInstance(this).addToRequestQueue(jsonRequest)
+    }
 
     //----------------    FARMACIA  -------------------
     private fun getFarmaciaById(id:Int):Farmacia{
